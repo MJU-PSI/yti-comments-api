@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -38,8 +37,6 @@ import fi.vm.yti.comments.api.model.Status;
 import static fi.vm.yti.comments.api.constants.ApiConstants.*;
 
 public interface AbstractBaseResource {
-
-    String SUOMI_URI_HOST = "http://uri.suomi.fi";
 
     String MESSAGE_TYPE_ADDED_OR_MODIFIED = "MESSAGE_TYPE_ADDED_OR_MODIFIED";
 
@@ -197,8 +194,8 @@ public interface AbstractBaseResource {
         }
     }
 
-    default void ensureSuomiFiUriHost(final String host) {
-        if (!host.startsWith(SUOMI_URI_HOST)) {
+    default void ensureUriHost(final String host, final String uriHost) {
+        if (!host.startsWith(uriHost)) {
             throw new YtiCommentsException(new ErrorModel(HttpStatus.NOT_ACCEPTABLE.value(), "This URI is not resolvable as a comments resource."));
         }
     }

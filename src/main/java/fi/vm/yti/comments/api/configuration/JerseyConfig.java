@@ -44,9 +44,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         title = "YTI Comments - Comments API Service",
         termsOfService = "https://opensource.org/licenses/EUPL-1.1",
         contact = @Contact(
-            name = "Content commenting Service by the Digital and Population Data Services Agency",
-            url = "https://yhteentoimiva.suomi.fi/",
-            email = "yhteentoimivuus@dvv.fi"
+            name = "Content commenting Service by the Digital and Population Data Services Agency"
         ),
         license = @License(
             name = "EUPL-1.2",

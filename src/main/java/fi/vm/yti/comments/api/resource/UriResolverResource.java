@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fi.vm.yti.comments.api.api.ApiUtils;
+import fi.vm.yti.comments.api.configuration.UriProperties;
 import fi.vm.yti.comments.api.dao.CommentDao;
 import fi.vm.yti.comments.api.dao.CommentRoundDao;
 import fi.vm.yti.comments.api.dao.CommentThreadDao;
@@ -59,6 +61,9 @@ public class UriResolverResource implements AbstractBaseResource {
     private final CommentDao commentDao;
     private final ApiUtils apiUtils;
 
+    @Autowired
+    UriProperties uriProperties;
+
     @Inject
     public UriResolverResource(final CommentRoundDao commentRoundDao,
                                final CommentThreadDao commentThreadDao,
@@ -77,7 +82,7 @@ public class UriResolverResource implements AbstractBaseResource {
     @Produces({ MediaType.APPLICATION_JSON + ";charset=UTF-8", MediaType.TEXT_PLAIN })
     public Response resolveUri(@Parameter(description = "Resource URI.", required = true, in = ParameterIn.QUERY) @QueryParam("uri") final String uri) {
         final URI resolveUri = parseUriFromString(uri);
-        ensureSuomiFiUriHost(uri);
+        ensureUriHost(uri, uriProperties.getUriAddress());
         final String uriPath = resolveUri.getPath();
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -104,8 +109,8 @@ public class UriResolverResource implements AbstractBaseResource {
                                 @Parameter(description = "Filter string (csl) for expanding specific child resources.", in = ParameterIn.QUERY) @QueryParam("expand") final String expand,
                                 @Parameter(description = "Filter string (csl) for expanding specific child resources.", in = ParameterIn.QUERY) @QueryParam("token") final String token,
                                 @Parameter(description = "Resource URI.", required = true, in = ParameterIn.QUERY) @QueryParam("uri") final String uri) {
-        ensureSuomiFiUriHost(uri);
-        final String uriPath = uri.substring((SUOMI_URI_HOST).length());
+        ensureUriHost(uri, uriProperties.getUriAddress());
+        final String uriPath = uri.substring((uriProperties.getUriAddress()).length());
         checkResourceValidity(uriPath);
         final String resourcePath = uriPath.substring(API_PATH_COMMENTS.length() + 1);
         final List<String> resourcePathParams = parseResourcePathIdentifiers(resourcePath);

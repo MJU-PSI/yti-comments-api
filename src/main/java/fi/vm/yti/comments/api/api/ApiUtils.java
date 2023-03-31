@@ -11,12 +11,14 @@ import fi.vm.yti.comments.api.configuration.FrontendConfiguration;
 import fi.vm.yti.comments.api.configuration.GroupManagementProperties;
 import fi.vm.yti.comments.api.configuration.MessagingProperties;
 import fi.vm.yti.comments.api.configuration.TerminologyProperties;
+import fi.vm.yti.comments.api.configuration.UriProperties;
+
 import static fi.vm.yti.comments.api.constants.ApiConstants.*;
 
 @Component
 public class ApiUtils {
 
-    private static final String URI_SUOMI_COMMENT_ROUND_URL = "http://uri.suomi.fi/comments/round/";
+    private static final String URI_COMMENT_ROUND_CONTEXT_PATH = "/comments/round/";
     private static final String PATH_THREAD = "/thread";
     private static final String PATH_COMMENT = "/comment";
 
@@ -27,6 +29,7 @@ public class ApiUtils {
     private final DatamodelProperties dataModelProperties;
     private final CodelistProperties codelistProperties;
     private final MessagingProperties messagingProperties;
+    private final UriProperties uriProperties;
 
     @Inject
     public ApiUtils(final CommentsApiConfiguration commentsApiConfiguration,
@@ -35,7 +38,8 @@ public class ApiUtils {
                     final TerminologyProperties terminologyProperties,
                     final DatamodelProperties dataModelProperties,
                     final CodelistProperties codelistProperties,
-                    final MessagingProperties messagingProperties) {
+                    final MessagingProperties messagingProperties,
+                    final UriProperties uriProperties) {
         this.commentsApiConfiguration = commentsApiConfiguration;
         this.frontendConfiguration = frontendConfiguration;
         this.groupManagementProperties = groupManagementProperties;
@@ -43,6 +47,7 @@ public class ApiUtils {
         this.dataModelProperties = dataModelProperties;
         this.codelistProperties = codelistProperties;
         this.messagingProperties = messagingProperties;
+        this.uriProperties = uriProperties;
     }
 
     public String getEnv() {
@@ -142,17 +147,17 @@ public class ApiUtils {
     }
 
     public String createCommentRoundUri(final Integer commentRoundSequenceId) {
-        return URI_SUOMI_COMMENT_ROUND_URL + commentRoundSequenceId.toString();
+        return uriProperties.getUriAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString();
     }
 
     public String createCommentThreadUri(final Integer commentRoundSequenceId,
                                          final Integer commentThreadSequenceId) {
-        return URI_SUOMI_COMMENT_ROUND_URL + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString();
+        return uriProperties.getUriAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString();
     }
 
     public String createCommentUri(final Integer commentRoundSequenceId,
                                    final Integer commentThreadSequenceId,
                                    final Integer commentSequenceId) {
-        return URI_SUOMI_COMMENT_ROUND_URL + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString() + PATH_COMMENT + "/" + commentSequenceId.toString();
+        return uriProperties.getUriAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString() + PATH_COMMENT + "/" + commentSequenceId.toString();
     }
 }
