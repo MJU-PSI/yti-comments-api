@@ -33,7 +33,7 @@ public class UriProperties {
         this.scheme = scheme;
     }
 
-    public String getUriAddress() {
+    public String getUriHostAddress() {
         return scheme + "://" + host;
     }
 }

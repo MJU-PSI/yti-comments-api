@@ -147,17 +147,17 @@ public class ApiUtils {
     }
 
     public String createCommentRoundUri(final Integer commentRoundSequenceId) {
-        return uriProperties.getUriAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString();
+        return uriProperties.getUriHostAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString();
     }
 
     public String createCommentThreadUri(final Integer commentRoundSequenceId,
                                          final Integer commentThreadSequenceId) {
-        return uriProperties.getUriAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString();
+        return uriProperties.getUriHostAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString();
     }
 
     public String createCommentUri(final Integer commentRoundSequenceId,
                                    final Integer commentThreadSequenceId,
                                    final Integer commentSequenceId) {
-        return uriProperties.getUriAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString() + PATH_COMMENT + "/" + commentSequenceId.toString();
+        return uriProperties.getUriHostAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString() + PATH_COMMENT + "/" + commentSequenceId.toString();
     }
 }
