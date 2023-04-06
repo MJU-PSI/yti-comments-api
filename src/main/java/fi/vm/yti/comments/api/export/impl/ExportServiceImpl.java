@@ -114,15 +114,9 @@ public class ExportServiceImpl implements ExportService {
         final Row rowhead = sheet.createRow((short) 0);
         int headerCellIndex = 0;
         final CellStyle style = createCellStyle(workbook);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_LABEL_FI);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_LABEL_EN);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_LABEL_SV);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_LABEL_UND);
+        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_LABEL);
         addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_LABEL_LOCALNAME);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_DESCRIPTION_FI);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_DESCRIPTION_EN);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_DESCRIPTION_SV);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_DESCRIPTION_UND);
+        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_DESCRIPTION);
         addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_RESOURCE_URI);
         addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_MAIN_COMMENTS_COUNT);
         addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_STATUSCHANGES);
@@ -135,15 +129,9 @@ public class ExportServiceImpl implements ExportService {
         for (final CommentThread commentThread : commentThreads) {
             final Row row = sheet.createRow(rowIndex++);
             int cellIndex = 0;
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getLabel().get(LANGUAGE_FI)));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getLabel().get(LANGUAGE_EN)));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getLabel().get(LANGUAGE_SV)));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getLabel().get(LANGUAGE_UND)));
+            addCellToRow(row, style, cellIndex++, formatResourceLabel(commentThread.getLabel(), null));
             addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getLocalName()));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getDescription().get(LANGUAGE_FI)));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getDescription().get(LANGUAGE_EN)));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getDescription().get(LANGUAGE_SV)));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getDescription().get(LANGUAGE_UND)));
+            addCellToRow(row, style, cellIndex++, formatResourceLabel(commentThread.getDescription(), null));
             addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getResourceUri()));
             addCellToRow(row, style, cellIndex++, Long.toString(commentDao.getCommentThreadMainCommentCount(commentThread.getId())));
             addCellToRow(row, style, cellIndex++, resultService.getResultsForCommentThreadAsTextInFinnish(commentThread.getId()));
@@ -440,24 +428,17 @@ public class ExportServiceImpl implements ExportService {
         }
     }
 
-    private String formatResourceLabel(final Map<String, String> label,
-                                       final String localName) {
-        final StringBuffer buffer = new StringBuffer();
-        final String labelFi = checkEmptyValue(label.get(LANGUAGE_FI));
-        final String labelEn = checkEmptyValue(label.get(LANGUAGE_EN));
-        final String labelSv = checkEmptyValue(label.get(LANGUAGE_SV));
-        final String labelUnd = checkEmptyValue(label.get(LANGUAGE_UND));
-        buffer.append("FI: " + labelFi);
-        buffer.append(" EN: " + labelEn);
-        buffer.append(" SV: " + labelSv);
-        if (labelFi.isEmpty() && labelEn.isEmpty() && labelSv.isEmpty()) {
-            if (!labelUnd.isEmpty()) {
-                buffer.append(" UND: " + labelUnd);
+    private String formatResourceLabel(final Map<String, String> label, final String localName) {
+        String labelOut = "";
+        for (Map.Entry<String, String> pair : label.entrySet()) {
+            if (labelOut.length() > 0) {
+                labelOut += "\n";
             }
-            if (localName != null) {
-                buffer.append(" localName: " + localName);
-            }
+            labelOut += pair.getKey().toUpperCase() + ": " + pair.getValue();
         }
-        return buffer.toString();
+        if (localName != null) {
+            labelOut += "\nlocalName: " + localName;
+        }        
+        return labelOut;
     }
 }

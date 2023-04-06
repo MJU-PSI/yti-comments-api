@@ -58,14 +58,8 @@ public abstract class ApiConstants {
     public static final String EXPORT_HEADER_CREATED = "LUOTU";
     public static final String EXPORT_HEADER_MODIFIED = "MUOKATTU";
     public static final String EXPORT_HEADER_SOURCE_LABEL_LOCALNAME = "TIETOSISÄLTÖ TUNNISTE";
-    public static final String EXPORT_HEADER_SOURCE_LABEL_FI = "TIETOSISÄLTÖ FI";
-    public static final String EXPORT_HEADER_SOURCE_LABEL_EN = "TIETOSISÄLTÖ EN";
-    public static final String EXPORT_HEADER_SOURCE_LABEL_SV = "TIETOSISÄLTÖ SV";
-    public static final String EXPORT_HEADER_SOURCE_LABEL_UND = "TIETOSISÄLTÖ UND";
-    public static final String EXPORT_HEADER_DESCRIPTION_FI = "KUVAUS FI";
-    public static final String EXPORT_HEADER_DESCRIPTION_EN = "KUVAUS EN";
-    public static final String EXPORT_HEADER_DESCRIPTION_SV = "KUVAUS SV";
-    public static final String EXPORT_HEADER_DESCRIPTION_UND = "KUVAUS UND";
+    public static final String EXPORT_HEADER_SOURCE_LABEL = "TIETOSISÄLTÖ";
+    public static final String EXPORT_HEADER_DESCRIPTION = "KUVAUS";
     public static final String EXPORT_HEADER_RESOURCE_URI = "TIETOSISÄLLÖN URI";
     public static final String EXPORT_HEADER_MAIN_COMMENTS_COUNT = "PÄÄTASON KOMMENTTEJA YHTEENSÄ";
     public static final String EXPORT_HEADER_STATUSCHANGES = "TILAMUUTOKSET";
