@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import fi.vm.yti.comments.api.configuration.CommentsApiConfiguration;
+import fi.vm.yti.comments.api.configuration.CommentsApiProperties;
 import fi.vm.yti.comments.api.dao.CommentDao;
 import fi.vm.yti.comments.api.dao.CommentThreadDao;
 import fi.vm.yti.comments.api.dto.CommentThreadResultDTO;
@@ -29,7 +29,7 @@ public class ResultServiceImpl implements ResultService {
 
     private final CommentThreadDao commentThreadDao;
     private final CommentDao commentDao;
-    private final CommentsApiConfiguration config;
+    private final CommentsApiProperties commentsApiProperties;
     
     @Autowired
     private MessageSource messageSource;
@@ -37,10 +37,10 @@ public class ResultServiceImpl implements ResultService {
     @Inject
     public ResultServiceImpl(@Lazy final CommentThreadDao commentThreadDao,
                              @Lazy final CommentDao commentDao,
-                             final CommentsApiConfiguration config) {
+                             final CommentsApiProperties commentsApiProperties) {
         this.commentThreadDao = commentThreadDao;
         this.commentDao = commentDao;
-        this.config = config;
+        this.commentsApiProperties = commentsApiProperties;
     }
 
     @Transactional
@@ -78,7 +78,7 @@ public class ResultServiceImpl implements ResultService {
         final StringBuilder results = new StringBuilder();
         final Set<CommentThreadResultDTO> commentThreadResults = getResultsForCommentThread(commentThreadId);
         for (final CommentThreadResultDTO result : commentThreadResults) {
-            results.append(localizeResourceStatusToDefaultLanguage(result.getStatus(), messageSource, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+            results.append(localizeResourceStatusToDefaultLanguage(result.getStatus(), messageSource, Locale.forLanguageTag(this.commentsApiProperties.getDefaultLanguage())));
             results.append(": ");
             results.append(result.getCount());
             results.append(" (");

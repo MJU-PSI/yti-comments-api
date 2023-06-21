@@ -54,10 +54,6 @@ public class ApiUtils {
         return commentsApiConfiguration.getEnv();
     }
 
-    public String getDefaultLanguage() {
-        return commentsApiConfiguration.getDefaultLanguage();
-    }
-
     public String getGroupmanagementPublicUrl() {
         return groupManagementProperties.getPublicUrl();
     }
