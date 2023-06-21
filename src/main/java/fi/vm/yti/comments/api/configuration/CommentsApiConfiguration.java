@@ -25,6 +25,8 @@ public class CommentsApiConfiguration {
 
     private String env;
 
+    private String defaultLanguage;
+
     public String getEnv() {
         return env;
     }
@@ -79,5 +81,13 @@ public class CommentsApiConfiguration {
             builder.append(":");
             builder.append(port);
         }
+    }
+
+    public String getDefaultLanguage() {
+        return this.defaultLanguage != null ? this.defaultLanguage : "en";
+    }
+
+    public void setDefaultLanguage(final String defaultLanguage) {
+        this.defaultLanguage = defaultLanguage;
     }
 }

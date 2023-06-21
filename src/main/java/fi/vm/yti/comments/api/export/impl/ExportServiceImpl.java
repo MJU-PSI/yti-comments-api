@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -23,8 +24,11 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
+import fi.vm.yti.comments.api.configuration.CommentsApiConfiguration;
 import fi.vm.yti.comments.api.dao.CommentDao;
 import fi.vm.yti.comments.api.dto.UserDTO;
 import fi.vm.yti.comments.api.entity.Comment;
@@ -35,7 +39,7 @@ import fi.vm.yti.comments.api.export.ExportService;
 import fi.vm.yti.comments.api.service.ResultService;
 import fi.vm.yti.comments.api.service.UserService;
 import static fi.vm.yti.comments.api.constants.ApiConstants.*;
-import static fi.vm.yti.comments.api.utils.StatusUtils.localizeResourceStatusToFinnish;
+import static fi.vm.yti.comments.api.utils.StatusUtils.localizeResourceStatusToDefaultLanguage;
 
 @Component
 public class ExportServiceImpl implements ExportService {
@@ -47,19 +51,26 @@ public class ExportServiceImpl implements ExportService {
 
     private static final String LANGUAGE_FI = "fi";
     private static final String LANGUAGE_EN = "en";
-    private static final String LANGUAGE_SV = "sv";
-    private static final String LANGUAGE_UND = "und";
+    // private static final String LANGUAGE_SV = "sv";
+    private static final String LANGUAGE_SL = "sl";
+    // private static final String LANGUAGE_UND = "und";
 
     private final UserService userService;
     private final ResultService resultService;
     private final CommentDao commentDao;
+    private final CommentsApiConfiguration config;
+    
+    @Autowired
+    private MessageSource messageSource;
 
     public ExportServiceImpl(final UserService userService,
                              final ResultService resultService,
-                             final CommentDao commentDao) {
+                             final CommentDao commentDao,
+                             final CommentsApiConfiguration config) {
         this.userService = userService;
         this.resultService = resultService;
         this.commentDao = commentDao;
+        this.config = config;
     }
 
     public Workbook exportCommentRoundToExcel(final CommentRound commentRound) {
@@ -73,33 +84,33 @@ public class ExportServiceImpl implements ExportService {
 
     private void addCommentRoundSheet(final Workbook workbook,
                                       final CommentRound commentRound) {
-        final Sheet sheet = workbook.createSheet(EXPORT_EXCEL_TAB_COMMENTROUND_META);
+        final Sheet sheet = workbook.createSheet(messageSource.getMessage("l19", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
         final Row rowhead = sheet.createRow((short) 0);
         int headerCellIndex = 0;
         final CellStyle style = createCellStyle(workbook);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_NAME);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_DESCRIPTION);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_STATUS);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_URI);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_ADMIN);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_ORGANIZATIONS);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_SOURCE_NAME);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_SOURCE_TYPE);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_SOURCE_URI);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_STARTDATE);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENTROUND_ENDDATE);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_CREATED);
-        addCellToRow(rowhead, style, headerCellIndex, EXPORT_HEADER_MODIFIED);
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l22", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l23", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l24", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l25", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l26", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l27", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l28", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l29", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l30", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l31", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l32", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l33", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex, messageSource.getMessage("l34", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
         final Row row = sheet.createRow(1);
         int cellIndex = 0;
         addCellToRow(row, style, cellIndex++, checkEmptyValue(commentRound.getLabel()));
         addCellToRow(row, style, cellIndex++, checkEmptyValue(commentRound.getDescription()));
-        addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeRoundStatusToFinnish(commentRound.getStatus())));
+        addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeRoundStatusToDefaultLanguage(commentRound.getStatus())));
         addCellToRow(row, style, cellIndex++, checkEmptyValue(commentRound.getUri()));
         addCellToRow(row, style, cellIndex++, getUserName(commentRound.getUserId()));
         addCellToRow(row, style, cellIndex++, checkEmptyValue(getOrganizationsOfCommentRound(commentRound)));
-        addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeSourceLabelToFinnish(commentRound.getSourceLabel())));
-        addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeSourceTypeToFinnish(commentRound.getSource().getContainerType())));
+        addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeSourceLabelToDefaultLanguage(commentRound.getSourceLabel())));
+        addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeSourceTypeToDefaultLanguage(commentRound.getSource().getContainerType())));
         addCellToRow(row, style, cellIndex++, checkEmptyValue(commentRound.getSource().getContainerUri()));
         addCellToRow(row, style, cellIndex++, formatDateToExport(commentRound.getStartDate()));
         addCellToRow(row, style, cellIndex++, formatDateToExport(commentRound.getEndDate()));
@@ -110,21 +121,21 @@ public class ExportServiceImpl implements ExportService {
 
     private void addCommentThreadsSheet(final Workbook workbook,
                                         final Set<CommentThread> commentThreads) {
-        final Sheet sheet = workbook.createSheet(EXPORT_EXCEL_TAB_RESOURCES);
+        final Sheet sheet = workbook.createSheet(messageSource.getMessage("l20", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
         final Row rowhead = sheet.createRow((short) 0);
         int headerCellIndex = 0;
         final CellStyle style = createCellStyle(workbook);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_LABEL);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_LABEL_LOCALNAME);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_DESCRIPTION);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_RESOURCE_URI);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_MAIN_COMMENTS_COUNT);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_STATUSCHANGES);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SOURCE_ORIGINAL_STATUS);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_ADMIN_STATUS_SUGGESTION);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_ADMIN_COMMENT);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_CREATED);
-        addCellToRow(rowhead, style, headerCellIndex, EXPORT_HEADER_USER);
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l36", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l35", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l37", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l38", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l39", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l40", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l41", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l42", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l43", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l33", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex, messageSource.getMessage("l45", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
         int rowIndex = 1;
         for (final CommentThread commentThread : commentThreads) {
             final Row row = sheet.createRow(rowIndex++);
@@ -134,9 +145,9 @@ public class ExportServiceImpl implements ExportService {
             addCellToRow(row, style, cellIndex++, formatResourceLabel(commentThread.getDescription(), null));
             addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getResourceUri()));
             addCellToRow(row, style, cellIndex++, Long.toString(commentDao.getCommentThreadMainCommentCount(commentThread.getId())));
-            addCellToRow(row, style, cellIndex++, resultService.getResultsForCommentThreadAsTextInFinnish(commentThread.getId()));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeResourceStatusToFinnish(commentThread.getCurrentStatus())));
-            addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeResourceStatusToFinnish(commentThread.getProposedStatus())));
+            addCellToRow(row, style, cellIndex++, resultService.getResultsForCommentThreadAsTextInDefaultLanguage(commentThread.getId()));
+            addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeResourceStatusToDefaultLanguage(commentThread.getCurrentStatus(), messageSource, Locale.forLanguageTag(this.config.getDefaultLanguage()))));
+            addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeResourceStatusToDefaultLanguage(commentThread.getProposedStatus(), messageSource, Locale.forLanguageTag(this.config.getDefaultLanguage()))));
             addCellToRow(row, style, cellIndex++, checkEmptyValue(commentThread.getProposedText()));
             addCellToRow(row, style, cellIndex++, formatDateToExportWithMinutesInHelsinkiTimezone(commentThread.getCreated()));
             addCellToRow(row, style, cellIndex, getUserName(commentThread.getUserId()));
@@ -146,24 +157,24 @@ public class ExportServiceImpl implements ExportService {
 
     private void addCommentsSheet(final Workbook workbook,
                                   final Set<CommentThread> commentThreads) {
-        final Sheet sheet = workbook.createSheet(EXPORT_EXCEL_TAB_COMMENTS);
+        final Sheet sheet = workbook.createSheet(messageSource.getMessage("l21", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
         final Row rowhead = sheet.createRow((short) 0);
         int headerCellIndex = 0;
         final CellStyle style = createCellStyle(workbook);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_RESOURCE);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_USER);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_MAIN_LEVEL);
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l44", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l45", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l46", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
         final int maxLevel = getCommentsMaxLevels(commentThreads);
         int level = 2;
         while (level <= maxLevel) {
-            addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_LEVEL + " " + level);
+            addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l47", null, Locale.forLanguageTag(this.config.getDefaultLanguage())) + " " + level);
             level++;
         }
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_SUGGESTED_STATUS);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_CREATED);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_MODIFIED);
-        addCellToRow(rowhead, style, headerCellIndex++, EXPORT_HEADER_COMMENT_URI);
-        addCellToRow(rowhead, style, headerCellIndex, EXPORT_HEADER_RESOURCE_URI);
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l48", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l33", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l34", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex++, messageSource.getMessage("l49", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
+        addCellToRow(rowhead, style, headerCellIndex, messageSource.getMessage("l38", null, Locale.forLanguageTag(this.config.getDefaultLanguage())));
         final int resourceUriHeaderIndex = headerCellIndex;
         int rowIndex = 1;
         for (final CommentThread commentThread : commentThreads) {
@@ -242,7 +253,7 @@ public class ExportServiceImpl implements ExportService {
                 return firstName + " " + lastName;
             }
         }
-        return "Poistettu käyttäjä";
+        return messageSource.getMessage("l18", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
     }
 
     private int addCommentRows(final Sheet sheet,
@@ -260,7 +271,7 @@ public class ExportServiceImpl implements ExportService {
             addCellToRow(row, style, cellIndex, checkEmptyValue(comment.getContent()));
             cellIndex = 2 + maxLevel;
             if (level == 1) {
-                addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeResourceStatusToFinnish(comment.getProposedStatus())));
+                addCellToRow(row, style, cellIndex++, checkEmptyValue(localizeResourceStatusToDefaultLanguage(comment.getProposedStatus(), messageSource, Locale.forLanguageTag(this.config.getDefaultLanguage()))));
             } else {
                 cellIndex++;
             }
@@ -356,14 +367,41 @@ public class ExportServiceImpl implements ExportService {
                 } else {
                     first = false;
                 }
-                String organizationName = organization.getPrefLabel(LANGUAGE_FI);
-                if (organizationName == null) {
+                String organizationName = null;
+                String organizationNameSl = null;
+                String organizationNameEn = null;
+                String organizationNameFi = null;
+                if (this.config.getDefaultLanguage() == LANGUAGE_SL) {
+                    organizationName = organization.getPrefLabel(LANGUAGE_SL);
+                    organizationNameSl = organizationName;
+                } else if (this.config.getDefaultLanguage() == LANGUAGE_EN) {
                     organizationName = organization.getPrefLabel(LANGUAGE_EN);
+                    organizationNameEn = organizationName;
+                } else if (this.config.getDefaultLanguage() == LANGUAGE_FI) {
+                    organizationName = organization.getPrefLabel(LANGUAGE_FI);
+                    organizationNameFi = organizationName;
                 }
-                if (organizationName == null) {
-                    organizationName = organization.getPrefLabel(LANGUAGE_SV);
+                if (organizationName != null) {
+                    buffer.append(organizationName);
+                } else if (organizationNameSl != null) {
+                    buffer.append(organizationNameSl);
+                } else if (organizationNameEn != null) {
+                    buffer.append(organizationNameEn);
+                } else if (organizationNameFi != null) {
+                    buffer.append(organizationNameFi);
                 }
-                buffer.append(organizationName);
+
+                // String organizationName = organization.getPrefLabel(LANGUAGE_SL);
+                // if (organizationName == null) {
+                //     organizationName = organization.getPrefLabel(LANGUAGE_EN);
+                // }
+                // if (organizationName == null) {
+                //     organizationName = organization.getPrefLabel(LANGUAGE_FI);
+                // }
+                // if (organizationName == null) {
+                //     organizationName = organization.getPrefLabel(LANGUAGE_SV);
+                // }
+                
             }
         } else {
             buffer.append("-");
@@ -371,36 +409,54 @@ public class ExportServiceImpl implements ExportService {
         return buffer.toString();
     }
 
-    private String localizeSourceLabelToFinnish(final Map<String, String> sourceLabel) {
-        String label = sourceLabel.get(LANGUAGE_FI);
-        if (label == null) {
-            sourceLabel.get(LANGUAGE_EN);
+    private String localizeSourceLabelToDefaultLanguage(final Map<String, String> sourceLabel) {
+        String label = null;
+        String labelSl = null;
+        String labelEn = null;
+        String labelFi = null;
+
+        if (this.config.getDefaultLanguage() == LANGUAGE_SL) {
+            label = sourceLabel.get(LANGUAGE_SL);
+            labelSl = label;
+        } else if (this.config.getDefaultLanguage() == LANGUAGE_EN) {
+            label = sourceLabel.get(LANGUAGE_EN);
+            labelEn = label;
+        } else if (this.config.getDefaultLanguage() == LANGUAGE_FI) {
+            label = sourceLabel.get(LANGUAGE_FI);
+            labelFi = label;
         }
-        if (label == null) {
-            sourceLabel.get(LANGUAGE_SV);
+        if (label != null) {
+            return label;
+        } else if (labelSl != null) {
+            return labelSl;
+        } else if (labelEn != null) {
+            return labelEn;
+        } else if (labelFi != null) {
+            return labelFi;
+        } else {
+            return "";
         }
-        return label;
     }
 
-    private String localizeSourceTypeToFinnish(final String type) {
+    private String localizeSourceTypeToDefaultLanguage(final String type) {
         switch (type) {
             case "codelist": {
-                return "koodisto";
+                return messageSource.getMessage("l1", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             case "terminology": {
-                return "sanasto";
+                return messageSource.getMessage("l2", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             case "datamodel": {
-                return "tietomalli";
+                return messageSource.getMessage("l3", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             case "library": {
-                return "tietokomponenttikirjasto";
+                return messageSource.getMessage("l4", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             case "profile": {
-                return "soveltamisprofiili";
+                return messageSource.getMessage("l5", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             case "commentround": {
-                return "kommentointikierros";
+                return messageSource.getMessage("l6", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             default: {
                 return type;
@@ -408,19 +464,19 @@ public class ExportServiceImpl implements ExportService {
         }
     }
 
-    private String localizeRoundStatusToFinnish(final String status) {
+    private String localizeRoundStatusToDefaultLanguage(final String status) {
         switch (status) {
             case "INPROGRESS": {
-                return "Käynnissä";
+                return messageSource.getMessage("l7", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             case "ENDED": {
-                return "Päättynyt";
+                return messageSource.getMessage("l8", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             case "INCOMPLETE": {
-                return "Keskeneräinen";
+                return messageSource.getMessage("l9", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             case "AWAIT": {
-                return "Odottaa";
+                return messageSource.getMessage("l10", null, Locale.forLanguageTag(this.config.getDefaultLanguage()));
             }
             default: {
                 return status;

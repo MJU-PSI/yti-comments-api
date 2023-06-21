@@ -9,5 +9,5 @@ public interface ResultService {
 
     Set<CommentThreadResultDTO> getResultsForCommentThread(final UUID commentThreadId);
 
-    String getResultsForCommentThreadAsTextInFinnish(final UUID commentThreadId);
+    String getResultsForCommentThreadAsTextInDefaultLanguage(final UUID commentThreadId);
 }

@@ -1,30 +1,36 @@
 package fi.vm.yti.comments.api.utils;
 
+import java.util.Locale;
+
+import org.springframework.context.MessageSource;
+
 public interface StatusUtils {
 
-    static String localizeResourceStatusToFinnish(final String status) {
+    public MessageSource getMessageSource();
+
+    static String localizeResourceStatusToDefaultLanguage(final String status, final MessageSource messageSource, Locale locale) {
         if (status != null) {
             switch (status) {
                 case "VALID": {
-                    return "Voimassa oleva";
+                    return messageSource.getMessage("l11", null, locale);
                 }
                 case "DRAFT": {
-                    return "Luonnos";
+                    return messageSource.getMessage("l12", null, locale);
                 }
                 case "SUPERSEDED": {
-                    return "Korvattu";
+                    return messageSource.getMessage("l13", null, locale);
                 }
                 case "INVALID": {
-                    return "Virheellinen";
+                    return messageSource.getMessage("l14", null, locale);
                 }
                 case "RETIRED": {
-                    return "Poistettu käytöstä";
+                    return messageSource.getMessage("l15", null, locale);
                 }
                 case "INCOMPLETE": {
-                    return "Keskeneräinen";
+                    return messageSource.getMessage("l16", null, locale);
                 }
                 case "SUGGESTED": {
-                    return "Ehdotus";
+                    return messageSource.getMessage("l17", null, locale);
                 }
                 default: {
                     return status;

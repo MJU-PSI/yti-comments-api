@@ -2,35 +2,45 @@ package fi.vm.yti.comments.api.service.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import fi.vm.yti.comments.api.configuration.CommentsApiConfiguration;
 import fi.vm.yti.comments.api.dao.CommentDao;
 import fi.vm.yti.comments.api.dao.CommentThreadDao;
 import fi.vm.yti.comments.api.dto.CommentThreadResultDTO;
 import fi.vm.yti.comments.api.entity.Comment;
 import fi.vm.yti.comments.api.entity.CommentThread;
 import fi.vm.yti.comments.api.service.ResultService;
-import static fi.vm.yti.comments.api.utils.StatusUtils.localizeResourceStatusToFinnish;
+import static fi.vm.yti.comments.api.utils.StatusUtils.localizeResourceStatusToDefaultLanguage;
 
 @Component
 public class ResultServiceImpl implements ResultService {
 
     private final CommentThreadDao commentThreadDao;
     private final CommentDao commentDao;
+    private final CommentsApiConfiguration config;
+    
+    @Autowired
+    private MessageSource messageSource;
 
     @Inject
     public ResultServiceImpl(@Lazy final CommentThreadDao commentThreadDao,
-                             @Lazy final CommentDao commentDao) {
+                             @Lazy final CommentDao commentDao,
+                             final CommentsApiConfiguration config) {
         this.commentThreadDao = commentThreadDao;
         this.commentDao = commentDao;
+        this.config = config;
     }
 
     @Transactional
@@ -64,11 +74,11 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Transactional
-    public String getResultsForCommentThreadAsTextInFinnish(final UUID commentThreadId) {
+    public String getResultsForCommentThreadAsTextInDefaultLanguage(final UUID commentThreadId) {
         final StringBuilder results = new StringBuilder();
         final Set<CommentThreadResultDTO> commentThreadResults = getResultsForCommentThread(commentThreadId);
         for (final CommentThreadResultDTO result : commentThreadResults) {
-            results.append(localizeResourceStatusToFinnish(result.getStatus()));
+            results.append(localizeResourceStatusToDefaultLanguage(result.getStatus(), messageSource, Locale.forLanguageTag(this.config.getDefaultLanguage())));
             results.append(": ");
             results.append(result.getCount());
             results.append(" (");

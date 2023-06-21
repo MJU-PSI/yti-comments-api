@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -84,5 +85,15 @@ public class SpringAppConfig {
         restTemplate.getMessageConverters()
             .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
         return restTemplate;
+    }
+
+    @Bean
+    public ResourceBundleMessageSource messageSource() {
+
+        var source = new ResourceBundleMessageSource();
+        source.setBasenames("messages/labels");
+        source.setUseCodeAsDefaultMessage(true);
+
+        return source;
     }
 }
