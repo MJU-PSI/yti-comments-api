@@ -192,13 +192,14 @@ public class CommentRoundResource implements AbstractBaseResource {
     @Path("{commentRoundIdentifier}")
     public Response getCommentRound(@Parameter(description = "CommentRound identifier, either UUID or sequenceId.", in = ParameterIn.PATH, required = true) @PathParam("commentRoundIdentifier") final String commentRoundIdentifier,
                                     @Parameter(description = "Filter string (csl) for expanding specific child objects.", in = ParameterIn.QUERY) @QueryParam("expand") final String expand,
-                                    @Parameter(description = "Format for output.", in = ParameterIn.QUERY) @QueryParam("format") @DefaultValue(FORMAT_JSON) final String format) {
+                                    @Parameter(description = "Format for output.", in = ParameterIn.QUERY) @QueryParam("format") @DefaultValue(FORMAT_JSON) final String format,
+                                    @Parameter(description = "Language for output.", in = ParameterIn.QUERY) @QueryParam("lang") @DefaultValue(LANGUAGE_CODE_EN) final String lang) {
         ObjectWriterInjector.set(new FilterModifier(createSimpleFilterProviderWithSingleFilter(FILTER_NAME_COMMENTROUND, expand)));
         if (FORMAT_EXCEL.equalsIgnoreCase(format)) {
             final CommentRound commentRound = commentRoundDao.findByIdentifier(commentRoundIdentifier);
             if (commentRound != null) {
                 final String fileName = commentRound.getLabel() + ".xlsx";
-                return streamExcelOutput(exportService.exportCommentRoundToExcel(commentRound), fileName);
+                return streamExcelOutput(exportService.exportCommentRoundToExcel(commentRound, lang), fileName);
             } else {
                 throw new NotFoundException();
             }

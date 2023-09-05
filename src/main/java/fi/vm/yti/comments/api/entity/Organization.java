@@ -2,6 +2,7 @@ package fi.vm.yti.comments.api.entity;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import org.apache.commons.lang3.StringUtils;
 
 import static fi.vm.yti.comments.api.constants.ApiConstants.LANGUAGE_CODE_EN;
 
@@ -64,8 +66,14 @@ public class Organization extends AbstractIdentifyableEntity implements Serializ
 
     public String getPrefLabel(final String language) {
         String prefLabelValue = this.prefLabel.get(language);
-        if (prefLabelValue == null) {
-            prefLabelValue = this.prefLabel.get(LANGUAGE_CODE_EN);
+        if (StringUtils.isEmpty(prefLabelValue)) {
+            Iterator<Map.Entry<String,String>> iterator = this.prefLabel.entrySet().iterator();
+            while(iterator.hasNext()) {
+                Map.Entry<String, String> entry = iterator.next();
+                if (!StringUtils.isEmpty(entry.getValue())) {
+                    return entry.getValue() + "(" + entry.getKey() +  ")";
+                }
+            }
         }
         return prefLabelValue;
     }

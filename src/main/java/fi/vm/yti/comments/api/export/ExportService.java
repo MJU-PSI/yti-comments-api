@@ -6,5 +6,5 @@ import fi.vm.yti.comments.api.entity.CommentRound;
 
 public interface ExportService {
 
-    Workbook exportCommentRoundToExcel(final CommentRound commentRound);
+    Workbook exportCommentRoundToExcel(final CommentRound commentRound, final String lang);
 }
