@@ -50,7 +50,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UriResolverResource implements AbstractBaseResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(UriResolverResource.class);
-    private static final String API_PATH_COMMENTS = "/comments";
     private static final String PATH_COMMENTROUND = "round";
     private static final String PATH_THREAD = "thread";
     private static final String PATH_COMMENT = "comment";
@@ -90,7 +89,7 @@ public class UriResolverResource implements AbstractBaseResource {
         final ObjectNode json = objectMapper.createObjectNode();
         json.put("uri", uri);
         checkResourceValidity(uriPath);
-        final String resourcePath = uriPath.substring(API_PATH_COMMENTS.length() + 1);
+        final String resourcePath = uriPath.substring(uriProperties.getContextPath().length() + 1);
         final List<String> resourceCodeValues = Arrays.asList(resourcePath.split("/"));
         json.put("url", resolveResourceApiUrl(resourceCodeValues));
         return Response.ok().entity(json).build();
@@ -112,7 +111,7 @@ public class UriResolverResource implements AbstractBaseResource {
         ensureUriHost(uri, uriProperties.getUriHostAddress());
         final String uriPath = uri.substring((uriProperties.getUriHostAddress()).length());
         checkResourceValidity(uriPath);
-        final String resourcePath = uriPath.substring(API_PATH_COMMENTS.length() + 1);
+        final String resourcePath = uriPath.substring(uriProperties.getContextPath().length() + 1);
         final List<String> resourcePathParams = parseResourcePathIdentifiers(resourcePath);
         final List<String> acceptHeaders = parseAcceptHeaderValues(accept);
         final URI redirectUri;
@@ -245,9 +244,9 @@ public class UriResolverResource implements AbstractBaseResource {
     }
 
     private void checkResourceValidity(final String uriPath) {
-        final String resourcePath = uriPath.substring(API_PATH_COMMENTS.length() + 1);
+        final String resourcePath = uriPath.substring(uriProperties.getContextPath().length() + 1);
         final List<String> resourceCodeValues = Arrays.asList(resourcePath.split("/"));
-        if (!uriPath.toLowerCase().startsWith(API_PATH_COMMENTS)) {
+        if (!uriPath.toLowerCase().startsWith(uriProperties.getContextPath())) {
             LOG.error("Comments resource URI not resolvable, wrong context path!");
             throw new YtiCommentsException(new ErrorModel(HttpStatus.NOT_ACCEPTABLE.value(), "Comments resource URI not resolvable, wrong context path!"));
         } else if (resourceCodeValues.isEmpty()) {

@@ -17,12 +17,8 @@ public class UrlGenerator {
 
     public String createResourceUrl(final String apiPath,
                                     final String resourceId) {
-        final String port = commentsApiProperties.getPort();
         final StringBuilder builder = new StringBuilder();
-        builder.append(commentsApiProperties.getScheme());
-        builder.append("://");
-        builder.append(commentsApiProperties.getHost());
-        appendPortToUrlIfNotEmpty(port, builder);
+        builder.append(commentsApiProperties.getPublicUrl());
         builder.append(commentsApiProperties.getContextPath());
         builder.append("/");
         builder.append(API_BASE_PATH);
@@ -35,13 +31,5 @@ public class UrlGenerator {
             builder.append(resourceId);
         }
         return builder.toString();
-    }
-
-    private void appendPortToUrlIfNotEmpty(final String port,
-                                           final StringBuilder builder) {
-        if (port != null && !port.isEmpty()) {
-            builder.append(":");
-            builder.append(port);
-        }
     }
 }

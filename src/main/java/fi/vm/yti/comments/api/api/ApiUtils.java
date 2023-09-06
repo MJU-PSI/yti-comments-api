@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import fi.vm.yti.comments.api.configuration.CodelistProperties;
 import fi.vm.yti.comments.api.configuration.CommentsApiConfiguration;
 import fi.vm.yti.comments.api.configuration.DatamodelProperties;
-import fi.vm.yti.comments.api.configuration.FrontendConfiguration;
 import fi.vm.yti.comments.api.configuration.GroupManagementProperties;
 import fi.vm.yti.comments.api.configuration.MessagingProperties;
 import fi.vm.yti.comments.api.configuration.TerminologyProperties;
@@ -18,12 +17,11 @@ import static fi.vm.yti.comments.api.constants.ApiConstants.*;
 @Component
 public class ApiUtils {
 
-    private static final String URI_COMMENT_ROUND_CONTEXT_PATH = "/comments/round/";
+    private static final String PATH_ROUND = "/round";
     private static final String PATH_THREAD = "/thread";
     private static final String PATH_COMMENT = "/comment";
 
     private final CommentsApiConfiguration commentsApiConfiguration;
-    private final FrontendConfiguration frontendConfiguration;
     private final GroupManagementProperties groupManagementProperties;
     private final TerminologyProperties terminologyProperties;
     private final DatamodelProperties dataModelProperties;
@@ -33,7 +31,6 @@ public class ApiUtils {
 
     @Inject
     public ApiUtils(final CommentsApiConfiguration commentsApiConfiguration,
-                    final FrontendConfiguration frontendConfiguration,
                     final GroupManagementProperties groupManagementProperties,
                     final TerminologyProperties terminologyProperties,
                     final DatamodelProperties dataModelProperties,
@@ -41,7 +38,6 @@ public class ApiUtils {
                     final MessagingProperties messagingProperties,
                     final UriProperties uriProperties) {
         this.commentsApiConfiguration = commentsApiConfiguration;
-        this.frontendConfiguration = frontendConfiguration;
         this.groupManagementProperties = groupManagementProperties;
         this.terminologyProperties = terminologyProperties;
         this.dataModelProperties = dataModelProperties;
@@ -79,7 +75,7 @@ public class ApiUtils {
     }
 
     public String createCommentRoundWebUrl(final Integer commentRoundSequenceId) {
-        return createFrontendBaseUrl() + "/round;round=" + commentRoundSequenceId.toString();
+        return createPublicUrl() + "/round;round=" + commentRoundSequenceId.toString();
     }
 
     public String createCommentThreadUrl(final Integer commentRoundSequenceId,
@@ -89,7 +85,7 @@ public class ApiUtils {
 
     public String createCommentThreadWebUrl(final Integer commentRoundSequenceId,
                                             final Integer commentThreadSequenceId) {
-        return createFrontendBaseUrl() + "/round;round=" + commentRoundSequenceId.toString() + ";thread=" + commentThreadSequenceId.toString();
+        return createPublicUrl() + "/round;round=" + commentRoundSequenceId.toString() + ";thread=" + commentThreadSequenceId.toString();
     }
 
     public String createCommentUrl(final Integer commentRoundSequenceId,
@@ -101,13 +97,13 @@ public class ApiUtils {
     public String createCommentWebUrl(final Integer commentRoundSequenceId,
                                       final Integer commentThreadSequenceId,
                                       final Integer commentSequenceId) {
-        return createFrontendBaseUrl() + "/round;round=" + commentRoundSequenceId.toString() + ";thread=" + commentThreadSequenceId.toString() + ";comment=" + commentSequenceId.toString();
+        return createPublicUrl() + "/round;round=" + commentRoundSequenceId.toString() + ";thread=" + commentThreadSequenceId.toString() + ";comment=" + commentSequenceId.toString();
     }
 
     private String createResourceUrl(final String apiPath,
                                      final String resourceId) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(createBaseUrl());
+        builder.append(commentsApiConfiguration.getPublicUrl());
         builder.append(commentsApiConfiguration.getContextPath());
         builder.append(API_BASE_PATH);
         builder.append("/");
@@ -120,44 +116,22 @@ public class ApiUtils {
         return builder.toString();
     }
 
-    private String createBaseUrl() {
-        final String port = commentsApiConfiguration.getPort();
-        final StringBuilder builder = new StringBuilder();
-        builder.append(commentsApiConfiguration.getScheme());
-        builder.append("://");
-        builder.append(commentsApiConfiguration.getHost());
-        if (port != null && port.length() > 0) {
-            builder.append(":");
-            builder.append(port);
-        }
-        return builder.toString();
-    }
-
-    private String createFrontendBaseUrl() {
-        final String port = frontendConfiguration.getPort();
-        final StringBuilder builder = new StringBuilder();
-        builder.append(frontendConfiguration.getScheme());
-        builder.append("://");
-        builder.append(frontendConfiguration.getHost());
-        if (port != null && port.length() > 0) {
-            builder.append(":");
-            builder.append(port);
-        }
-        return builder.toString();
+    private String createPublicUrl() {
+        return commentsApiConfiguration.getPublicUrl();
     }
 
     public String createCommentRoundUri(final Integer commentRoundSequenceId) {
-        return uriProperties.getUriHostAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString();
+        return uriProperties.getUriHostAddress() + PATH_ROUND + "/" + commentRoundSequenceId.toString();
     }
 
     public String createCommentThreadUri(final Integer commentRoundSequenceId,
                                          final Integer commentThreadSequenceId) {
-        return uriProperties.getUriHostAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString();
+        return uriProperties.getUriHostAddress() + PATH_ROUND + "/" + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString();
     }
 
     public String createCommentUri(final Integer commentRoundSequenceId,
                                    final Integer commentThreadSequenceId,
                                    final Integer commentSequenceId) {
-        return uriProperties.getUriHostAddress() + URI_COMMENT_ROUND_CONTEXT_PATH + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString() + PATH_COMMENT + "/" + commentSequenceId.toString();
+        return uriProperties.getUriHostAddress() + PATH_ROUND + "/" + commentRoundSequenceId.toString() + PATH_THREAD + "/" + commentThreadSequenceId.toString() + PATH_COMMENT + "/" + commentSequenceId.toString();
     }
 }
