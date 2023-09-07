@@ -109,7 +109,7 @@ public class UriResolverResource implements AbstractBaseResource {
                                 @Parameter(description = "Filter string (csl) for expanding specific child resources.", in = ParameterIn.QUERY) @QueryParam("token") final String token,
                                 @Parameter(description = "Resource URI.", required = true, in = ParameterIn.QUERY) @QueryParam("uri") final String uri) {
         ensureUriHost(uri, uriProperties.getUriHostAddress());
-        final String uriPath = uri.substring((uriProperties.getUriHostAddress()).length());
+        final String uriPath = uri.substring((uriProperties.getUriHost()).length());
         checkResourceValidity(uriPath);
         final String resourcePath = uriPath.substring(uriProperties.getContextPath().length() + 1);
         final List<String> resourcePathParams = parseResourcePathIdentifiers(resourcePath);
