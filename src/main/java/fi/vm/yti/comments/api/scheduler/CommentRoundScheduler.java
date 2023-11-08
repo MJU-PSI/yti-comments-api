@@ -35,14 +35,14 @@ public class CommentRoundScheduler {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0 0 * * *", zone = "Europe/Helsinki")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Europe/Ljubljana")
     public void updateCommentRoundStatuses() {
         updateStatuses();
     }
 
     @Transactional
     public void updateStatuses() {
-        final ZonedDateTime zonedDateTime = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Europe/Helsinki"));
+        final ZonedDateTime zonedDateTime = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("Europe/Ljubljana"));
         LOG.info("*** Scheduled checking for comment round status changes at " + zonedDateTime + " ***");
         changeRoundStatuses(zonedDateTime, STATUS_INPROGRESS, STATUS_ENDED);
         changeRoundStatuses(zonedDateTime, STATUS_AWAIT, STATUS_INPROGRESS);

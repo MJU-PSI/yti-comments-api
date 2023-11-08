@@ -345,8 +345,8 @@ public class ExportServiceImpl implements ExportService {
         if (dateTime != null) {
             final ZoneId utcZoneId = ZoneId.of("UTC");
             final ZonedDateTime zonedDateTime = dateTime.atZone(utcZoneId);
-            final ZoneId helsinkiZoneId = ZoneId.of("Europe/Helsinki");
-            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATEFORMAT_WITH_MINUTES).withZone(helsinkiZoneId);
+            final ZoneId ljubljanaZoneId = ZoneId.of("Europe/Ljubljana");
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATEFORMAT_WITH_MINUTES).withZone(ljubljanaZoneId);
             return zonedDateTime.format(formatter);
         } else {
             return "";
